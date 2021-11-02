@@ -29,7 +29,7 @@ apt-get update \
         jq \
         git \
         graphviz \
-        docker-ce-cli \
+        docker-ce docker-ce-cli containerd.io \
         kubectl \
         liblttng-ust0 \
         iputils-ping \
@@ -50,8 +50,8 @@ curl -LsS https://aka.ms/InstallAzureCLIDeb | bash
 #apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # install maven (need to update if new maven version is available)
-export MAVEN_VERSION="3.8.3"
-export MAVEN_HOME=/usr/share/maven
+MAVEN_VERSION="3.8.3"
+MAVEN_HOME=/usr/share/maven
 curl -LfsSo /tmp/maven.tar.gz https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
     && mkdir -p $MAVEN_HOME \
     && tar -xzC $MAVEN_HOME --strip-components=1 -f /tmp/maven.tar.gz \
@@ -63,21 +63,21 @@ curl -LfsSo /tmp/maven.tar.gz https://apache.osuosl.org/maven/maven-3/${MAVEN_VE
 # See for envs for jdk these vars of common microsoft vm-agent pattern, see https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md#java
 
 # Install java 17
-export JAVA_HOME_17_X64=/usr/share/openjdk17
+JAVA_HOME_17_X64=/usr/share/openjdk17
 curl -LfsSo /tmp/openjdk17.tar.gz https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17%2B35/OpenJDK17-jdk_x64_linux_hotspot_17_35.tar.gz \
     && mkdir -p $JAVA_HOME_17_X64 \
     && tar -xzC $JAVA_HOME_17_X64 --strip-components=1 -f /tmp/openjdk17.tar.gz \
     && rm /tmp/openjdk17.tar.gz
 
 # Install java 11
-export JAVA_HOME_11_X64=/usr/share/openjdk11
+JAVA_HOME_11_X64=/usr/share/openjdk11
 curl -LfsSo /tmp/openjdk11.tar.gz https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.12_7.tar.gz \
     && mkdir -p $JAVA_HOME_11_X64 \
     && tar -xzC $JAVA_HOME_11_X64 --strip-components=1 -f /tmp/openjdk11.tar.gz \
     && rm /tmp/openjdk11.tar.gz
 
 # Install java 8
-export JAVA_HOME_8_X64=/usr/share/openjdk8
+JAVA_HOME_8_X64=/usr/share/openjdk8
 curl -LfsSo /tmp/openjdk8.tar.gz https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u302-b08/OpenJDK8U-jdk_x64_linux_hotspot_8u302b08.tar.gz \
     && mkdir -p $JAVA_HOME_8_X64 \
     && tar -xzC $JAVA_HOME_8_X64 --strip-components=1 -f /tmp/openjdk8.tar.gz \
@@ -89,10 +89,18 @@ curl -LfsSo /tmp/openjdk8.tar.gz https://github.com/adoptium/temurin8-binaries/r
 #    && $JAVA_HOME_11_X64/bin/keytool -importcert -noprompt -cacerts -storepass changeit -alias ConterraRootCA -file /root/ConterraRootCA.crt \
 #    && $JAVA_HOME_17_X64/bin/keytool -importcert -noprompt -cacerts -storepass changeit -alias ConterraRootCA -file /root/ConterraRootCA.crt
 
+# write env vars
+echo "export JAVA_HOME=$JAVA_HOME_11_X64"          > /etc/profile.d/java-env.sh
+echo "export JAVA_HOME_8_X64=$JAVA_HOME_8_X64"    >> /etc/profile.d/java-env.sh
+echo "export JAVA_HOME_11_X64=$JAVA_HOME_11_X64"  >> /etc/profile.d/java-env.sh
+echo "export JAVA_HOME_17_X64=$JAVA_HOME_17_X64"  >> /etc/profile.d/java-env.sh
+echo "export MAVEN_VERSION=$MAVEN_VERSION"        >> /etc/profile.d/java-env.sh
+echo "export MAVEN_HOME=$MAVEN_HOME"              >> /etc/profile.d/java-env.sh
+
 # add azure devops user 'AzDevOps'
 set -eux \
     && groupadd --gid 10000 -r vsts \
-    && groupadd --gid 994 -r docker \
+    && groupadd docker \
     && useradd --uid 10000 -r -g vsts -G docker AzDevOps \
     && mkdir -p /home/AzDevOps/.m2/repository \
     && chown -R AzDevOps:vsts /home/AzDevOps
