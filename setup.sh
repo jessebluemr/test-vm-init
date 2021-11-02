@@ -3,7 +3,6 @@
 echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
 apt-get update \
-    && apt install unattended-upgrades
     && apt-get install -y --no-install-recommends \
         apt-transport-https \
         ca-certificates \
