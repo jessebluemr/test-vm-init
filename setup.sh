@@ -89,13 +89,13 @@ curl -LfsSo /tmp/openjdk8.tar.gz https://github.com/adoptium/temurin8-binaries/r
 #    && $JAVA_HOME_11_X64/bin/keytool -importcert -noprompt -cacerts -storepass changeit -alias ConterraRootCA -file /root/ConterraRootCA.crt \
 #    && $JAVA_HOME_17_X64/bin/keytool -importcert -noprompt -cacerts -storepass changeit -alias ConterraRootCA -file /root/ConterraRootCA.crt
 
-# write env vars
-echo "export JAVA_HOME=$JAVA_HOME_11_X64"          > /etc/profile.d/java-env.sh
-echo "export JAVA_HOME_8_X64=$JAVA_HOME_8_X64"    >> /etc/profile.d/java-env.sh
-echo "export JAVA_HOME_11_X64=$JAVA_HOME_11_X64"  >> /etc/profile.d/java-env.sh
-echo "export JAVA_HOME_17_X64=$JAVA_HOME_17_X64"  >> /etc/profile.d/java-env.sh
-echo "export MAVEN_VERSION=$MAVEN_VERSION"        >> /etc/profile.d/java-env.sh
-echo "export MAVEN_HOME=$MAVEN_HOME"              >> /etc/profile.d/java-env.sh
+# write env vars (need to modify /etc/environment because azure dev ops is trigger '/bin/bash --noprofile --norc')
+echo "export JAVA_HOME=$JAVA_HOME_11_X64"         >> /etc/environment
+echo "export JAVA_HOME_8_X64=$JAVA_HOME_8_X64"    >> /etc/environment
+echo "export JAVA_HOME_11_X64=$JAVA_HOME_11_X64"  >> /etc/environment
+echo "export JAVA_HOME_17_X64=$JAVA_HOME_17_X64"  >> /etc/environment
+echo "export MAVEN_VERSION=$MAVEN_VERSION"        >> /etc/environment
+echo "export MAVEN_HOME=$MAVEN_HOME"              >> /etc/environment
 
 # add azure devops user 'AzDevOps'
 set -eux \
