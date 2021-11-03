@@ -100,7 +100,6 @@ echo "export MAVEN_HOME=$MAVEN_HOME"              >> /etc/profile.d/java-env.sh
 # add azure devops user 'AzDevOps'
 set -eux \
     && groupadd --gid 10000 -r vsts \
-    && groupadd docker \
     && useradd --uid 10000 -r -g vsts -G docker AzDevOps \
     && mkdir -p /home/AzDevOps/.m2/repository \
     && chown -R AzDevOps:vsts /home/AzDevOps
